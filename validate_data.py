@@ -54,10 +54,19 @@ def validate_schema(df, output_report_name="schema_validation_errors.csv"):
         return False
 
 if __name__ == "__main__":
-    # When run directly, it only validates the clean production data
-    data_path = 'data/raw/churn.csv'
-    if os.path.exists(data_path):
-        raw_df = pd.read_csv(data_path)
-        validate_schema(raw_df, output_report_name="baseline_validation.csv")
+    data_path = "data/raw/churn.csv"
+
+    if not os.path.exists(data_path):
+        raise FileNotFoundError(
+            f"Dataset not found at: {data_path}"
+        )
+
+    raw_df = pd.read_csv(data_path)
+
+    if validate_schema(
+        raw_df,
+        output_report_name="baseline_validation.csv"
+    ):
+        print("[SUCCESS] Data validation completed.")
     else:
-        print(f"[ERROR] Target file not found at: {data_path}")
+        raise SystemExit(1)
